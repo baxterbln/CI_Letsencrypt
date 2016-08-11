@@ -75,7 +75,7 @@ class Letsencrypt
             $challenge = array_reduce($response['challenges'], function ($v, $w) {
                 return $v ? $v : ($w['type'] == 'http-01' ? $w : false);
             });
-            //if (!$challenge) throw new \RuntimeException("HTTP Challenge for $domain is not available. Whole response: " . json_encode($response));
+            if (!$challenge) throw new \RuntimeException("HTTP Challenge for $domain is not available. Whole response: " . json_encode($response));
 
             $this->log("Got challenge token for $domain");
             $location = $this->client->getLastLocation();
