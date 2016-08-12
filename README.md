@@ -12,7 +12,7 @@ Usage:
 1.) Create certificate:
 
     /* Set country for certificate request */
-    $params = array('DE', 'Germany', null);
+    $params = array('countryCode' => 'DE', 'state' => 'Germany', 'mailto' => 'your@mail.addr', 'logger' => null);
 
 	/* Load libary */
 	$this->load->library('Letsencrypt', $params);

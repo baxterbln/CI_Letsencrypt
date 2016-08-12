@@ -4,6 +4,7 @@ class Letsencrypt
 {
     public $countryCode = 'DE';
     public $state = "Germany";
+    public $mailto = ';'
 
     /** @var \Psr\Log\LoggerInterface */
     private $logger;
@@ -21,10 +22,9 @@ class Letsencrypt
         $this->client = new Client( $this->_CI->config->item('certificate_api') );
         $this->accountDirectory = $this->_CI->config->item('certificate_path') . '/_account';
 
-        if (isset($params[0])) {
-            $this->countryCode = $params[0];
-            $this->state = $params[1];
-            $this->logger = $params[2];
+        foreach ($params as $property => $value)
+        {
+            $this->$property = $value;
         }
     }
 
@@ -116,8 +116,6 @@ class Letsencrypt
             }
 
             $this->log("Sending request to challenge");
-
-            $challenge['uri'] = str_replace("http://127.0.0.1:4000", "http://boulder.cconnect.es:4000", $challenge['uri']);
 
             // send request to challenge
             $result = $this->signedRequest(
@@ -234,14 +232,17 @@ class Letsencrypt
         $certificate = $this->_CI->config->item('certificate_path') . '/_domains/'.$domain.'/cert.pem';
 
         if (false === ($data = @file_get_contents($certificate))){
+            $this->log('Failed to open cert: '.$certificate);
 			throw new Exception('Failed to open cert: '.$certificate);
 		}
 
         if (false === ($x509 = @openssl_x509_read($data))){
+            $this->log('Failed to parse cert: '.$certificate."\n".openssl_error_string());
 			throw new Exception('Failed to parse cert: '.$certificate."\n".openssl_error_string());
 		}
 
 		if (false === (@openssl_x509_export($x509, $cert))){
+            $this->log('Failed to parse cert: '.$certificate."\n".openssl_error_string());
 			throw new Exception('Failed to parse cert: '.$certificate."\n".openssl_error_string());
 		}
 
@@ -284,7 +285,7 @@ class Letsencrypt
             'method'   => 'contact',
             'base'     => '',
             'contact' => array(
-                'mailto:'.$mailto,
+                'mailto:'.$this->mailto,
             ),
         );
 
@@ -317,7 +318,7 @@ class Letsencrypt
 
         $result = $this->signedRequest(
             '/acme/new-reg',
-            array('resource' => 'new-reg', 'contact'=>array('mailto: info@cconnect.es'), 'agreement' => $this->license)
+            array('resource' => 'new-reg', 'contact'=>array('mailto:'.$this->mailto), 'agreement' => $this->license)
         );
 
         if(!isset($result['createdAt'])) {
@@ -446,9 +447,7 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment');
     protected function log($message)
     {
         if($this->logger) {
-            $this->logger->info($message);
-        } else {
-            //echo $message."\n";
+            log_message('debug', $message);
         }
     }
 }
@@ -467,8 +466,6 @@ class Client
 
     private function curl($method, $url, $data = null)
     {
-        // Only for testing, if a local boulder server running
-        $url = str_replace("http://127.0.0.1:4000", "http://boulder.cconnect.es:4000", $url);
         $url = preg_match('~^http~', $url) ? $url : $this->base.$url;
 
         $headers = array('Accept: application/json', 'Content-Type: application/json');
