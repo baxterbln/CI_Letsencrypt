@@ -6,7 +6,6 @@ class Letsencrypt
     public $state = "Germany";
     public $mailto = ';'
 
-    /** @var \Psr\Log\LoggerInterface */
     private $logger;
     private $client;
     private $license;
@@ -32,7 +31,7 @@ class Letsencrypt
     {
         if (!file_exists($this->accountDirectory) && !@mkdir($this->accountDirectory, 0755, true)) {
             $this->log("Directory  $this->accountDirectory is not exist");
-            throw new \RuntimeException("Couldn't create directory to expose provate key: ${$this->accountDirectory}");
+            throw new \RuntimeException("Couldn't create directory to expose private key: ${$this->accountDirectory}");
         }
 
         if (!is_file($this->accountDirectory . '/private.pem')) {
