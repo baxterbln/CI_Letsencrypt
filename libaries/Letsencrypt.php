@@ -69,8 +69,6 @@ class Letsencrypt
                 array("resource" => "new-authz", "identifier" => array("type" => "dns", "value" => $domain))
             );
 
-            print_r($response);
-
             // choose http-01 challange only
             $challenge = array_reduce($response['challenges'], function ($v, $w) {
                 return $v ? $v : ($w['type'] == 'http-01' ? $w : false);
@@ -450,7 +448,7 @@ keyUsage = nonRepudiation, digitalSignature, keyEncipherment');
         if($this->logger) {
             $this->logger->info($message);
         } else {
-            echo $message."\n";
+            //echo $message."\n";
         }
     }
 }
@@ -472,7 +470,7 @@ class Client
         // Only for testing, if a local boulder server running
         $url = str_replace("http://127.0.0.1:4000", "http://boulder.cconnect.es:4000", $url);
         $url = preg_match('~^http~', $url) ? $url : $this->base.$url;
-        print $url;
+
         $headers = array('Accept: application/json', 'Content-Type: application/json');
         $handle = curl_init();
         curl_setopt($handle, CURLOPT_URL, $url);

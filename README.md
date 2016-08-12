@@ -7,7 +7,7 @@ Edit your config/letsencrypt.php set the folderpath for certificates.
 
 For example, you use the path /home/certs, your private key will stored in /home/certs/_account and the certificates for all domains in /home/certs/_domains/DOMAINNAME
 
-Usage: 
+Usage:
 
 1.) Create certificate:
 
@@ -19,20 +19,26 @@ Usage:
 
 	/* Initialize the account, this will create your account certificates, if not exist */
 	$this->letsencrypt->initAccount();
-	
+
 	/* sign domain */
-	if ($this->letsencrypt->signDomains(array('domain.com'))){
-	    // your code....
+    try {
+        $this->letsencrypt->signDomains(array('domain.com'));
+        // your code....
+    } catch (Exception $e) {
+        echo 'Exception: ',  $e->getMessage(), "\n";
     }
-	
+
 2.) Revoke certificate:
 
-	/* Load libary */	
+	/* Load libary */
 	$this->_CI->load->library('Letsencrypt');
 
 	/* revoke domain */
-    if ($this->letsencrypt->revokeCertificate('domain.com')){
-	    // your code....
+    try {
+        $this->letsencrypt->revokeCertificate('domain.com');
+        // your code....
+    } catch (Exception $e) {
+        echo 'Exception: ',  $e->getMessage(), "\n";
     }
 
 Requirements:
