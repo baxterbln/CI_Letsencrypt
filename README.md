@@ -12,17 +12,17 @@ Usage:
 1.) Create certificate:
 
     /* Set country for certificate request */
-    $params = array('countryCode' => 'DE', 'state' => 'Germany', 'mailto' => 'your@mail.addr', 'logger' => null);
+    $params = array('country_code' => 'DE', 'state' => 'Germany', 'mailto' => 'your@mail.addr', 'logger' => null);
 
 	/* Load libary */
 	$this->load->library('Letsencrypt', $params);
 
 	/* Initialize the account, this will create your account certificates, if not exist */
-	$this->letsencrypt->initAccount();
+	$this->letsencrypt->init_account();
 
 	/* sign domain */
     try {
-        $this->letsencrypt->signDomains(array('domain.com'));
+        $this->letsencrypt->sign_domains(array('domain.com'));
         // your code....
     } catch (Exception $e) {
         echo 'Exception: ',  $e->getMessage(), "\n";
@@ -35,7 +35,7 @@ Usage:
 
 	/* revoke domain */
     try {
-        $this->letsencrypt->revokeCertificate('domain.com');
+        $this->letsencrypt->revoke_certificate('domain.com');
         // your code....
     } catch (Exception $e) {
         echo 'Exception: ',  $e->getMessage(), "\n";
