@@ -1,5 +1,5 @@
 #CI_Letsencrypt
-Let´s encrypt library for codeigniter (based on Lescript)
+Let´s encrypt library for codeigniter
 
 The Letsencrypt CI Libary is simplified concept of ACME client implementation especially for Let's Encrypt service. It's goal is to have one easy to use codeigniter libary without dependencies.
 
